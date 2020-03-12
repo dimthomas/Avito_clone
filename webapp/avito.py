@@ -54,9 +54,11 @@ def get_page_data(html):
         save_data(title, url, price, metro)
 
 def save_data(title, url, price, metro):
-    moto = Motorcycles(title=title, url=url, price=price, metro=metro)
-    db.session.add(moto)
-    db.session.commit()
+    url_exists = Motorcycles.query.filter(Motorcycles.url == url ).count()
+    if not url_exists:
+        moto = Motorcycles(title=title, url=url, price=price, metro=metro)
+        db.session.add(moto)
+        db.session.commit()
 
 
 def get_all_url():
