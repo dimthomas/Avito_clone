@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
+from webapp.model import db, Motorcycles
+
 def get_html(url):
     try:
         result =requests.get(url)
@@ -30,7 +32,6 @@ def get_total_pages(html):
 def get_page_data(html):
     soup = BeautifulSoup(html, 'lxml')
     ads = soup.find('div', class_='js-catalog_serp').find_all('div', class_='item_table')
-    data = []
 
     for ad in ads:
         # title, price, metro, url
@@ -50,18 +51,15 @@ def get_page_data(html):
             metro = ad.find('div', class_='data').find('div', class_='item-address').text.strip()
         except:
             metro = ''
+        save_data(title, url, price, metro)
 
-        data.append({'title': title,
-                'price': price,
-                'metro': metro,
-                'url': url})
-    return data
-
-
+def save_data(title, url, price, metro):
+    moto = Motorcycles(title=title, url=url, price=price, metro=metro)
+    db.session.add(moto)
+    db.session.commit()
 
 
-
-def main():
+def get_all_url():
     url = "https://www.avito.ru/sankt-peterburg/mototsikly_i_mototehnika/mototsikly?cd=1&radius=0"
     base_url = 'https://www.avito.ru/sankt-peterburg/mototsikly_i_mototehnika/mototsikly?'
     page_part = 'p='
@@ -72,9 +70,3 @@ def main():
         url_gen = base_url + page_part + str(i)
         html = get_html(url_gen)
         get_page_data(html)
-
-
-if __name__ == "__main__":
-    main()
-
-    
