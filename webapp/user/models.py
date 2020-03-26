@@ -1,18 +1,7 @@
 from flask_login import UserMixin
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-db = SQLAlchemy()
-
-class Motorcycles(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        title = db.Column(db.String, nullable=False)
-        url = db.Column(db.String, unique=True, nullable=False)
-        price = db.Column(db.String, nullable=False)
-        metro = db.Column(db.String, nullable=False)
-
-        def __repr__(self):
-            return '<Motorcycles {} {}>'.format(self.title, self.url)
+from webapp.db import db
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

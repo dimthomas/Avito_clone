@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
-from webapp.model import db, Motorcycles
+from webapp.db import db
+from webapp.motorcycles.models import Motorcycles
 
 def get_html(url):
     try:
@@ -33,24 +34,20 @@ def get_page_data(html):
     soup = BeautifulSoup(html, 'lxml')
     ads = soup.find('div', class_='js-catalog_serp').find_all('div', class_='item_table')
 
+#TODO: Сделать проверку при помощи if
+
     for ad in ads:
-        # title, price, metro, url
-        try:
+        title=price=metro=url = None
+
+        if ad.find('div', class_="snippet-title-row js-snippet-title-row"):
             title = ad.find('div', class_="snippet-title-row js-snippet-title-row").find('h3').text.strip()
-        except:
-            title = ''
-        try:
+        if 'https://www.avito.ru' + ad.find('div', class_="snippet-title-row js-snippet-title-row").find('h3').find('a').get('href'):
             url = 'https://www.avito.ru' + ad.find('div', class_="snippet-title-row js-snippet-title-row").find('h3').find('a').get('href')
-        except:
-            url = ''
-        try:
+        if ad.find('div', class_="snippet-price-row"):
             price = ad.find('div', class_="snippet-price-row").text.strip()
-        except:
-            price = ''
-        try:
+        if ad.find('div', class_='data').find('div', class_='item-address'):
             metro = ad.find('div', class_='data').find('div', class_='item-address').text.strip()
-        except:
-            metro = ''
+
         save_data(title, url, price, metro)
 
 def save_data(title, url, price, metro):
