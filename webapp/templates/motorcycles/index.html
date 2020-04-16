@@ -3,19 +3,11 @@
 {% block content %}
     <div class="row">
         <div class="col-12">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="alert alert-warning" role="alert">
-                {% for message in messages %}
-                    {{ message }}<br>
-                {% endfor %}
-            </div>
-            {% endif %}
-        {% endwith %}
+            {% include('messages.html') %}
             {% for data in data_avito %}
-            <h3><a href="{{ data.url }}">{{ data.title }}</a></h3>
+            <h3><a href="{{ url_for('motorcycles.single_moto', moto_id=data.id) }}">{{ data.title }}</a></h3>
             <p>{{ data.price }}</p>
-            <p>{{ data.metro }}</p>
+            <p>{{ data.metro }} | Комментарии: {{ data.comments_count() }}</p>
             <hr />
             {% endfor %}
     </div>

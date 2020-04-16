@@ -34,8 +34,6 @@ def get_page_data(html):
     soup = BeautifulSoup(html, 'lxml')
     ads = soup.find('div', class_='js-catalog_serp').find_all('div', class_='item_table')
 
-#TODO: Сделать проверку при помощи if
-
     for ad in ads:
         title=price=metro=url = None
 

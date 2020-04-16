@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 from webapp.user.models import User
 
@@ -14,7 +14,7 @@ class RegistrationForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired()], render_kw={"class": "form-control"})
     email = StringField('Электронная почта', validators=[DataRequired(), Email()], render_kw={"class": "form-control"})
     password = PasswordField('Пароль', validators=[DataRequired()], render_kw={"class": "form-control"})
-    password2 = PasswordField('Повторите пароль', validators=[DataRequired()], render_kw={"class": "form-control"})
+    password2 = PasswordField('Повторите пароль', validators=[DataRequired(), EqualTo('password', message='Пароли не совпадают')], render_kw={"class": "form-control"})
     submit = SubmitField('Отправить!', render_kw={"class": "btn btn-primary"})
 
     def validate_username(self, username):
@@ -27,10 +27,5 @@ class RegistrationForm(FlaskForm):
         if email_count > 0:
             raise ValidationError('Пользователь с таким почтовым адресом уже существует')
 
-    def validate_password(self, password, password2):
-        self.password = password
-        self.password2 = password2
-        if password != password2:
-            raise ValidationError('Пароли не совпадают')
 
 

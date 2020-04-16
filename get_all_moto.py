@@ -1,6 +1,6 @@
 from webapp import create_app
-from webapp.avito import get_page_data, get_html, get_all_url
+from webapp.motorcycles.parsers import avito
 
 app = create_app()
 with app.app_context():
-    get_page_data(get_html(get_all_url()))
+    avito.get_moto_content()
