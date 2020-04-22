@@ -10,10 +10,20 @@ blueprint = Blueprint('motorcycles', __name__)
 
 @blueprint.route('/')
 def index():
+    page = request.args.get('page')
+    
+    if page and page.isdigit():
+        page = int(page)
+    else:
+        page = 1
+
     page_title = 'Клон Авито: Мотоциклы'
     url = "https://www.avito.ru/sankt-peterburg/mototsikly_i_mototehnika/mototsikly?cd=1&radius=0"
-    data_avito = Motorcycles.query.filter(Motorcycles.text.isnot(None)).order_by(Motorcycles.price.desc()).all()
-    return render_template('motorcycles/index.html', page_title=page_title, data_avito=data_avito)
+    data_avito = Motorcycles.query.filter(Motorcycles.text.isnot(None)).order_by(Motorcycles.price.desc()) #.all()
+
+    pages = data_avito.paginate(page=page, per_page=5)
+
+    return render_template('motorcycles/index.html', page_title=page_title, pages=pages)
 
 
 @blueprint.route('/moto/<int:moto_id>')

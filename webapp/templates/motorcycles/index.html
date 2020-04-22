@@ -4,11 +4,35 @@
     <div class="row">
         <div class="col-12">
             {% include('messages.html') %}
-            {% for data in data_avito %}
+            {% for data in pages.items %}
             <h3><a href="{{ url_for('motorcycles.single_moto', moto_id=data.id) }}">{{ data.title }}</a></h3>
             <p>{{ data.price }}</p>
             <p>{{ data.metro }} | Комментарии: {{ data.comments_count() }}</p>
             <hr />
             {% endfor %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li
+                    {% if not pages.has_prev %}
+                    class="page-item disabled"
+                    {% endif%}>
+                <a class="page-link" href="./?page={{ pages.prev_num }}">&laquo;</a>
+                </li>
+                {% for page in pages.iter_pages() %}
+
+                    <li {% if page == pages.page %} class="page-item active" {%endif%}>
+                    <a class="page-link" href="./?page={{ page }}"> {{ page }} </a>
+                    </li>
+
+                {% endfor %}
+                <li
+                    {% if not pages.has_next %}
+                    class="page-item disabled"
+                    {% endif%}>
+                <a class="page-link" href="./?page={{ pages.next_num }}">&raquo;</a>
+                </li>
+
+            </ul>
+        </nav>
     </div>
 {% endblock %}
