@@ -17,9 +17,9 @@ def get_html(url):
         return False
 
 
-def save_data(title, url, price, metro):
+def save_data(title, url, price, metro, published):
     url_exists = Motorcycles.query.filter(Motorcycles.url == url ).count()
     if not url_exists:
-        moto = Motorcycles(title=title, url=url, price=price, metro=metro)
+        moto = Motorcycles(title=title, url=url, price=price, metro=metro, published=published)
         db.session.add(moto)
         db.session.commit()

@@ -10,6 +10,7 @@ class Motorcycles(db.Model):
         url = db.Column(db.String, unique=True, nullable=False)
         price = db.Column(db.String, nullable=False)
         metro = db.Column(db.String, nullable=False)
+        published = db.Column(db.DateTime, nullable=True)
         text = db.Column(db.Text, nullable=True)
 
         def comments_count(self):

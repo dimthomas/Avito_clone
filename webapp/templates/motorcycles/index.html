@@ -7,7 +7,8 @@
             {% for data in pages.items %}
             <h3><a href="{{ url_for('motorcycles.single_moto', moto_id=data.id) }}">{{ data.title }}</a></h3>
             <p>{{ data.price }}</p>
-            <p>{{ data.metro }} | Комментарии: {{ data.comments_count() }}</p>
+            <p>{{ data.metro }}</p>
+            <p>Опубликовано: {{ data.published.strftime('%d.%m.%Y') }} | Комментарии: {{ data.comments_count() }}</p>
             <hr />
             {% endfor %}
         <nav>
@@ -18,11 +19,14 @@
                     {% endif%}>
                 <a class="page-link" href="./?page={{ pages.prev_num }}">&laquo;</a>
                 </li>
-                {% for page in pages.iter_pages() %}
-
-                    <li {% if page == pages.page %} class="page-item active" {%endif%}>
-                    <a class="page-link" href="./?page={{ page }}"> {{ page }} </a>
-                    </li>
+                {% for page in pages.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                    {% if page %}
+                        <li {% if page == pages.page %} class="page-item active" {%endif%}>
+                        <a class="page-link" href="./?page={{ page }}"> {{ page }} </a>
+                        </li>
+                    {% else %}
+                        <span class="page-link">...</span>
+                    {% endif %}
 
                 {% endfor %}
                 <li

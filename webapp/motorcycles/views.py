@@ -1,25 +1,58 @@
+from datetime import datetime
 from flask import abort, Blueprint, current_app, flash, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 
 from webapp.db import db
-from webapp.motorcycles.forms import CommentForm
+from webapp.motorcycles.forms import CommentForm, AdForm
 from webapp.motorcycles.models import Comment, Motorcycles
 from webapp.utils import get_redirect_target
 
 blueprint = Blueprint('motorcycles', __name__)
 
+@blueprint.route('/create', methods=['POST', 'GET'])
+def create_ad():
+
+    '''if request.method == 'POST':
+        title = request.form['title']
+        metro = request.form['metro']
+        price = request.form['price']
+        body = request.form['body']
+        try:
+            ad = Motorcycles(title=title, metro=metro, price=price, url=None, text=body, published=datetime.now())
+            db.session.add(ad)
+            db.session.commit()
+            flash('Объявление добавлено')
+        except:
+            print('Что-то пошло не так')
+        return redirect(get_redirect_target())'''
+    
+    form = AdForm()
+    return render_template('motorcycles/create_ad.html', form=form)
+
+
 @blueprint.route('/')
 def index():
+
+    q = request.args.get('q')
+
     page = request.args.get('page')
-    
+
     if page and page.isdigit():
         page = int(page)
     else:
         page = 1
 
+    '''if q:
+        data_avito = Motorcycles.query.filter(Motorcycles.title.contains(q)).all()
+    else:'''
+
     page_title = 'Клон Авито: Мотоциклы'
     url = "https://www.avito.ru/sankt-peterburg/mototsikly_i_mototehnika/mototsikly?cd=1&radius=0"
-    data_avito = Motorcycles.query.filter(Motorcycles.text.isnot(None)).order_by(Motorcycles.price.desc()) #.all()
+    
+    if q:
+        data_avito = Motorcycles.query.filter(Motorcycles.title.contains(q)) #.all()
+    else:
+        data_avito = Motorcycles.query.filter(Motorcycles.text.isnot(None)).order_by(Motorcycles.published.desc())
 
     pages = data_avito.paginate(page=page, per_page=5)
 
